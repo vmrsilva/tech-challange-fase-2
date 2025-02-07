@@ -26,10 +26,7 @@ jobs:
       run: dotnet build ./TechChallange/TechChallange.sln --no-restore --configuration Release
 
     - name: Set up Docker
-      run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo systemctl start docker
+      run: echo docker container ls
 
     - name: Executar testes unitários e de integração
       run: dotnet test ./TechChallange/TechChallange.sln --no-build --configuration Release --logger trx
