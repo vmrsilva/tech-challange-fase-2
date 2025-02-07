@@ -25,6 +25,9 @@ jobs:
     - name: Compilar o código
       run: dotnet build ./TechChallange/TechChallange.sln --no-restore --configuration Release
 
+    - name: Set up Docker
+      run: docker container ls
+
     - name: Executar testes unitários e de integração
       run: dotnet test ./TechChallange/TechChallange.sln --no-build --configuration Release --logger trx
       env:
