@@ -1,4 +1,4 @@
-name: Git Actions Tech Challange
+name: Git Actions Tech Challenge
 
 on:
   push:
@@ -26,12 +26,19 @@ jobs:
       run: dotnet build ./TechChallange/TechChallange.sln --no-restore --configuration Release
 
     - name: Set up Docker
-      run: docker container ls
+      run: docker info
 
     - name: Executar testes unitários e de integração
       run: dotnet test ./TechChallange/TechChallange.sln --no-build --configuration Release --logger trx
       env:
         DOTNET_EnablePreviewFeatures: "true"
+
+    - name: Salvar resultados dos testes
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: TestResults
+        path: "**/*.trx"
 
   build:
     needs: test
@@ -46,16 +53,14 @@ jobs:
         DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
         DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
       run: |
-        if [ -n "$DOCKER_HUB_PASSWORD" ]; then
+        if [ -n "$DOCKER_HUB_PASSWORD" ] && [ -n "$DOCKER_HUB_USERNAME" ]; then
           echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
         else
-          echo "DOCKER_HUB_PASSWORD não está definido. Pulando login..."
+          echo "DOCKER_HUB_USERNAME ou DOCKER_HUB_PASSWORD não estão definidos. Pulando login..."
         fi
 
-
-
     - name: Construção da imagem Docker
-      run: docker build . --file ./TechChallange/TechChallange.Api Dockerfile --tag vmrsilva/tech-challange:latest --tag vmrsilva/tech-challange:${{ github.sha }}
+      run: docker build -f ./TechChallange/TechChallange.Api/Dockerfile -t vmrsilva/tech-challange:latest -t vmrsilva/tech-challange:${{ github.sha }} .
 
     - name: Push da imagem para o Docker Hub
       run: |
