@@ -106,7 +106,7 @@ namespace TechChallange.Test.IntegrationTests
                 }
                 catch
                 {
-                    await Task.Delay(1000);
+                    await Task.Delay(5000);
                 }
             }
             throw new Exception("Banco de dados não respondeu dentro do tempo esperado.");
