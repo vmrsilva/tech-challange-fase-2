@@ -34,8 +34,8 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine(ex.Message);
-                throw ex;
+                
+                throw new Exception("Erro aqui.");
             }
          
         }
