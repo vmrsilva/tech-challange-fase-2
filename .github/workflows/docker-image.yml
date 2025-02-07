@@ -56,6 +56,9 @@ jobs:
 
     - name: Push da imagem para o Docker Hub
       run: |
-        docker push my-docker-repo/my-image:latest
-        docker push my-docker-repo/my-image:${{ github.sha }}
-      if: ${{ secrets.DOCKER_HUB_PASSWORD != '' }}
+        if [ -n "${{ secrets.DOCKER_HUB_PASSWORD }}" ] && [ -n "${{ secrets.DOCKER_HUB_USERNAME }}" ]; then
+          docker push vmrsilva/tech-challange:latest
+          docker push vmrsilva/tech-challange:${{ github.sha }}
+        else
+          echo "DOCKER_HUB_USERNAME ou DOCKER_HUB_PASSWORD não estão definidos. Pulando o push..."
+        fi
