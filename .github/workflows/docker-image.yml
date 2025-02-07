@@ -39,12 +39,16 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Login no Docker Hub
+      env:
+        DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+        DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
       run: |
-            if [ -n "${{ secrets.DOCKER_HUB_PASSWORD }}" ]; then
-              echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-            else
-              echo "DOCKER_HUB_PASSWORD não está definido. Pulando login..."
-            fi
+        if [ -n "$DOCKER_HUB_PASSWORD" ]; then
+          echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+        else
+          echo "DOCKER_HUB_PASSWORD não está definido. Pulando login..."
+        fi
+
 
 
     - name: Construção da imagem Docker
