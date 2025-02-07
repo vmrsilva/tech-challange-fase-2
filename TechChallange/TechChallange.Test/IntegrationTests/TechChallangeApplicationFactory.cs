@@ -66,6 +66,8 @@ namespace TechChallange.Test.IntegrationTests
             await _sqlContainer.StartAsync();
             _connectionString = _sqlContainer.GetConnectionString();
             Environment.SetEnvironmentVariable("ConnectionStrings.Database", _connectionString);
+            using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
 
             await _redisContainer.StartAsync();
             _connectionStringRedis = _redisContainer.GetConnectionString();
