@@ -55,7 +55,7 @@ jobs:
 
 
     - name: Construção da imagem Docker
-      run: docker build . --file Dockerfile --tag vmrsilva/tech-challange:latest --tag vmrsilva/tech-challange:${{ github.sha }}
+      run: docker build . --file ./TechChallange/TechChallange.Api Dockerfile --tag vmrsilva/tech-challange:latest --tag vmrsilva/tech-challange:${{ github.sha }}
 
     - name: Push da imagem para o Docker Hub
       run: |
