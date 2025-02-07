@@ -20,7 +20,7 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restaurar pacotes
-      run: dotnet restore
+      run: dotnet restore ./TechChallange/TechChallange.sln
 
     - name: Compilar o código
       run: dotnet build --no-restore --configuration Release
