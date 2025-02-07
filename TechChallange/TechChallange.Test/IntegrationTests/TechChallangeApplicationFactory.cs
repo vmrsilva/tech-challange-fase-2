@@ -50,7 +50,7 @@ namespace TechChallange.Test.IntegrationTests
                 services.AddStackExchangeRedisCache(options =>
                 {
                     options.InstanceName = nameof(CacheRepository);
-                    options.Configuration = _connectionStringRedis; // Certifique-se que `_connectionString` contém a conexão do Redis
+                    options.Configuration = _connectionStringRedis; 
                 });
 
                 services.AddScoped<ICacheRepository, CacheRepository>();
@@ -78,16 +78,16 @@ namespace TechChallange.Test.IntegrationTests
 
             try
             {
-                using (var scope = Services.CreateScope())
-                {
-                    var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
-                    await context.Database.EnsureCreatedAsync();
+                //using (var scope = Services.CreateScope())
+                //{
+                //    var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
+                //    await context.Database.EnsureCreatedAsync();
 
-                    var region = new RegionEntity("SP", "11");
+                //    var region = new RegionEntity("SP", "11");
 
-                    context.Region.Add(region);
-                    await context.SaveChangesAsync();
-                }
+                //    context.Region.Add(region);
+                //    await context.SaveChangesAsync();
+                //}
             }
             catch (Exception)
             {
