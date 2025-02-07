@@ -1,0 +1,52 @@
+name: Git Actions Tech Challange
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    - name: Configurar .NET 8
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restaurar pacotes
+      run: dotnet restore
+
+    - name: Compilar o código
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Executar testes unitários e de integração
+      run: dotnet test --no-build --configuration Release --logger trx
+      env:
+        DOTNET_EnablePreviewFeatures: "true"
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    - name: Login no Docker Hub
+      run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+      if: ${{ secrets.DOCKER_HUB_PASSWORD != '' }}
+
+    - name: Construção da imagem Docker
+      run: docker build . --file Dockerfile --tag vmrsilva/tech-challange:latest --tag vmrsilva/tech-challange:${{ github.sha }}
+
+    - name: Push da imagem para o Docker Hub
+      run: |
+        docker push my-docker-repo/my-image:latest
+        docker push my-docker-repo/my-image:${{ github.sha }}
+      if: ${{ secrets.DOCKER_HUB_PASSWORD != '' }}
