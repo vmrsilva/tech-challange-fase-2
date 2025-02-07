@@ -23,7 +23,7 @@ jobs:
       run: dotnet restore ./TechChallange/TechChallange.sln
 
     - name: Compilar o código
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build ./TechChallange/TechChallange.sln --no-restore --configuration Release
 
     - name: Executar testes unitários e de integração
       run: dotnet test --no-build --configuration Release --logger trx
