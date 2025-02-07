@@ -26,7 +26,7 @@ jobs:
       run: dotnet build ./TechChallange/TechChallange.sln --no-restore --configuration Release
 
     - name: Executar testes unitários e de integração
-      run: dotnet test --no-build --configuration Release --logger trx
+      run: dotnet test ./TechChallange/TechChallange.sln --no-build --configuration Release --logger trx
       env:
         DOTNET_EnablePreviewFeatures: "true"
 
