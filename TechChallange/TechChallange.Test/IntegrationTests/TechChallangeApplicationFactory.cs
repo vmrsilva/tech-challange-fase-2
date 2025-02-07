@@ -76,16 +76,16 @@ namespace TechChallange.Test.IntegrationTests
 
             await WaitForDatabaseAsync();
 
-            using (var scope = Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
-                await context.Database.EnsureCreatedAsync();
+            //using (var scope = Services.CreateScope())
+            //{
+            //    var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
+            //    await context.Database.EnsureCreatedAsync();
 
-                var region = new RegionEntity("SP", "11");
+            //    var region = new RegionEntity("SP", "11");
 
-                context.Region.Add(region);
-                await context.SaveChangesAsync();
-            }
+            //    context.Region.Add(region);
+            //    await context.SaveChangesAsync();
+            //}
         }
 
         public async Task DisposeAsync()
