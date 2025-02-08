@@ -60,7 +60,7 @@ namespace TechChallange.Test.IntegrationTests
 
             using var connection = new SqlConnection(_connectionString);
   
-        
+        throw new Exception(_connectionString);
 
             var host = base.CreateHost(builder);
 
