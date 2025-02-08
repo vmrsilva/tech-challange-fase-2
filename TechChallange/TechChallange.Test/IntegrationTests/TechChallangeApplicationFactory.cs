@@ -60,21 +60,21 @@ namespace TechChallange.Test.IntegrationTests
 
             using var connection = new SqlConnection(_connectionString);
   
-        throw new Exception(_connectionString);
+        //throw new Exception(_connectionString);
 
             var host = base.CreateHost(builder);
 
 
-            //using (var scope = host.Services.CreateScope())
-            //{
-            //    var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
-            //    context.Database.Migrate();
+            using (var scope = host.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
+                context.Database.Migrate();
 
-            //    var region = new RegionEntity("SP", "11");
+                var region = new RegionEntity("SP", "11");
 
-            //    context.Region.Add(region);
-            //    context.SaveChanges();
-            //}
+                context.Region.Add(region);
+                context.SaveChanges();
+            }
 
             return host;
         }
