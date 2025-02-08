@@ -72,4 +72,4 @@ jobs:
           context: ./TechChallange
           file: ./TechChallange/TechChallange.Api/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/techchallange:latest, ${{ secrets.DOCKERHUB_USERNAME }}/dockerfordotnetapi:${{ github.run_number }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/techchallange:latest, ${{ secrets.DOCKERHUB_USERNAME }}/techchallange:${{ github.run_number }}
