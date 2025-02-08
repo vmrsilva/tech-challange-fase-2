@@ -58,20 +58,23 @@ namespace TechChallange.Test.IntegrationTests
 
             });
 
+            using var connection = new SqlConnection(_connectionString);
+  
+        
 
             var host = base.CreateHost(builder);
 
 
-            using (var scope = host.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
-                context.Database.Migrate();
+            //using (var scope = host.Services.CreateScope())
+            //{
+            //    var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
+            //    context.Database.Migrate();
 
-                var region = new RegionEntity("SP", "11");
+            //    var region = new RegionEntity("SP", "11");
 
-                context.Region.Add(region);
-                context.SaveChanges();
-            }
+            //    context.Region.Add(region);
+            //    context.SaveChanges();
+            //}
 
             return host;
         }
@@ -126,6 +129,8 @@ namespace TechChallange.Test.IntegrationTests
                 {
                     await connection.OpenAsync();
                     //throw new Exception("Abriu a conexão - here.");
+
+                    await connection.CloseAsync();
                     return;
                 }
                 catch
