@@ -38,8 +38,8 @@ namespace TechChallange.Test.IntegrationTests
                 );
 
 
-                var descriptorRedis = services.SingleOrDefault(d =>
-          d.ServiceType == typeof(IDistributedCache));
+                var descriptorRedis = services.SingleOrDefault(options =>
+                    options.ServiceType == typeof(IDistributedCache));
 
                 if (descriptorRedis != null)
                 {
@@ -59,7 +59,10 @@ namespace TechChallange.Test.IntegrationTests
             });
 
 
-            using (var scope = Services.CreateScope())
+            var host = base.CreateHost(builder);
+
+
+            using (var scope = host.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
                 context.Database.Migrate();
@@ -70,7 +73,7 @@ namespace TechChallange.Test.IntegrationTests
                 context.SaveChanges();
             }
 
-            return base.CreateHost(builder);
+            return host;
         }
 
         public async Task InitializeAsync()
