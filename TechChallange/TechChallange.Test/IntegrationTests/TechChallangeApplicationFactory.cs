@@ -78,21 +78,21 @@ namespace TechChallange.Test.IntegrationTests
              
             try
             {
-                //using (var scope = Services.CreateScope())
-                //{
-                //    var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
-                //    await context.Database.EnsureCreatedAsync();
+                using (var scope = Services.CreateScope())
+                {
+                    var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
+                    await context.Database.EnsureCreatedAsync();
 
-                //    var region = new RegionEntity("SP", "11");
+                    var region = new RegionEntity("SP", "11");
 
-                //    context.Region.Add(region);
-                //    await context.SaveChangesAsync();
-                //}
+                    context.Region.Add(region);
+                    await context.SaveChangesAsync();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw new Exception(_connectionString) ;
+                throw new Exception($"{_connectionString} + ' ---' + {ex.Message}") ;
             }
         }
 
