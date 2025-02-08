@@ -62,7 +62,7 @@ namespace TechChallange.Test.IntegrationTests
             using (var scope = Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
-                context.Database.EnsureCreated();
+                context.Database.Migrate();
 
                 var region = new RegionEntity("SP", "11");
 
