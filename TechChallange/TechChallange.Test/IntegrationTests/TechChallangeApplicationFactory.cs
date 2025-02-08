@@ -58,6 +58,18 @@ namespace TechChallange.Test.IntegrationTests
 
             });
 
+
+            using (var scope = Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
+                context.Database.EnsureCreated();
+
+                var region = new RegionEntity("SP", "11");
+
+                context.Region.Add(region);
+                context.SaveChanges();
+            }
+
             return base.CreateHost(builder);
         }
 
@@ -83,10 +95,10 @@ namespace TechChallange.Test.IntegrationTests
                 //    var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
                 //    await context.Database.EnsureCreatedAsync();
 
-                //    var region = new RegionEntity("SP", "11");
+                //    //var region = new RegionEntity("SP", "11");
 
-                //    context.Region.Add(region);
-                //    await context.SaveChangesAsync();
+                //    //context.Region.Add(region);
+                //    //await context.SaveChangesAsync();
                 //}
             }
             catch (Exception ex)
