@@ -61,7 +61,10 @@ jobs:
         else
           echo "DOCKER_HUB_USERNAME ou DOCKER_HUB_PASSWORD não estão definidos. Pulando login..."
         fi
-
+    
+    - name: Teste
+      run: cd ./TechChallange
+    
     - name: Construção da imagem Docker
       run: docker build -f ./TechChallange/Dockerfile -t vmrsilva/tech-challange:latest -t vmrsilva/tech-challange:${{ github.sha }} .
 
