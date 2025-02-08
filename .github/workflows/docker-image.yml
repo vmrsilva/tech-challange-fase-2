@@ -63,7 +63,7 @@ jobs:
         fi
     
     - name: Teste
-      run: echo $PATH
+      run: echo ls
     
     - name: Construção da imagem Docker
       run: docker build -f ./TechChallange/Dockerfile -t vmrsilva/tech-challange:latest -t vmrsilva/tech-challange:${{ github.sha }} .
