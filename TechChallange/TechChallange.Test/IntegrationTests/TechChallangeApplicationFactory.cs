@@ -50,7 +50,7 @@ namespace TechChallange.Test.IntegrationTests
                 services.AddStackExchangeRedisCache(options =>
                 {
                     options.InstanceName = nameof(CacheRepository);
-                    options.Configuration = _connectionStringRedis; 
+                    options.Configuration = _connectionStringRedis;
                 });
 
                 services.AddScoped<ICacheRepository, CacheRepository>();
@@ -75,7 +75,7 @@ namespace TechChallange.Test.IntegrationTests
 
 
             await WaitForDatabaseAsync();
-             
+
             try
             {
                 //using (var scope = Services.CreateScope())
@@ -92,7 +92,7 @@ namespace TechChallange.Test.IntegrationTests
             catch (Exception ex)
             {
 
-                throw new Exception($"{_connectionString} + ' ---' + {ex.Message}") ;
+                throw new Exception($"{_connectionString} + ' ---' + {ex.Message}");
             }
         }
 
