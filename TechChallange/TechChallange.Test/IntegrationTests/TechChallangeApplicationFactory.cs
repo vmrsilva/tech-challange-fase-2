@@ -62,16 +62,16 @@ namespace TechChallange.Test.IntegrationTests
             var host = base.CreateHost(builder);
 
 
-            using (var scope = host.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
-                context.Database.Migrate();
+            //using (var scope = host.Services.CreateScope())
+            //{
+            //    var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
+            //    context.Database.Migrate();
 
-                var region = new RegionEntity("SP", "11");
+            //    var region = new RegionEntity("SP", "11");
 
-                context.Region.Add(region);
-                context.SaveChanges();
-            }
+            //    context.Region.Add(region);
+            //    context.SaveChanges();
+            //}
 
             return host;
         }
