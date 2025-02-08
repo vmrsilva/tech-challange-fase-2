@@ -70,6 +70,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./TechChallange/Dockerfile
+          file: ./TechChallange.Api/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/dockerfordotnetapi:latest, ${{ secrets.DOCKERHUB_USERNAME }}/dockerfordotnetapi:${{ github.run_number }}
