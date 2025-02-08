@@ -110,7 +110,7 @@ namespace TechChallange.Test.IntegrationTests
                 try
                 {
                     await connection.OpenAsync();
-                    throw new Exception("Abriu a conexão - here.");
+                    //throw new Exception("Abriu a conexão - here.");
                     return;
                 }
                 catch
