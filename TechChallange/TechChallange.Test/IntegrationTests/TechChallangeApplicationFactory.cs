@@ -75,7 +75,7 @@ namespace TechChallange.Test.IntegrationTests
 
 
             await WaitForDatabaseAsync();
-
+             
             try
             {
                 //using (var scope = Services.CreateScope())
