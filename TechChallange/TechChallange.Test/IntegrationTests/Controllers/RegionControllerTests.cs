@@ -20,7 +20,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             try
             {
                 System.Console.WriteLine("Teste 1");
-                //var client = _techChallangeApplicationFactory.CreateClient();
+                var client = _techChallangeApplicationFactory.CreateClient();
 
                 //var response = await client.GetAsync("region/get-all?pageSize=10&page=1");
 
