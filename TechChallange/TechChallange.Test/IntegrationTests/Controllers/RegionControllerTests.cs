@@ -8,24 +8,15 @@ namespace TechChallange.Test.IntegrationTests.Controllers
 {
     public class RegionControllerTests (TechChallangeApplicationFactory techChallangeApplicationFactory): BaseIntegrationTest(techChallangeApplicationFactory)
     {
-        //private readonly TechChallangeApplicationFactory _techChallangeApplicationFactory;
-
-        //public RegionControllerTests(TechChallangeApplicationFactory techChallangeApplicationFactory)
-        //{
-        //    _techChallangeApplicationFactory = techChallangeApplicationFactory;
-        //}
 
         [Fact]
         public async Task Test()
         {
-            try
-            {
+
                 var client =techChallangeApplicationFactory.CreateClient();
                 await _dbContext.Region.AddAsync(new RegionEntity("SP", "11"));
-                await _dbContext.SaveChangesAsync();
-           
-                //System.Console.WriteLine("Teste 1");
-                //var client = _techChallangeApplicationFactory.CreateClient();
+                await _dbContext.SaveChangesAsync();           
+
 
                var response = await client.GetAsync("region/get-all?pageSize=10&page=1");
 
@@ -40,43 +31,28 @@ namespace TechChallange.Test.IntegrationTests.Controllers
                Assert.NotNull(result?.Data);
                Assert.Equal(1,result?.Data.Count());
 
-                // var result = await _regionService.GetAllPagedAsync(10, 1);
-
                 Assert.NotNull(resulxxt);
-
-
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception(ex.Message);
-            }
 
         }
 
-        //[Fact]
-        //public async Task Teste2()
-        //{
-        //    var client = _techChallangeApplicationFactory.CreateClient();
+        [Fact]
+        public async Task Teste2()
+        {
+            var regionEntity = new RegionEntity("SP", "11");
+            await _dbContext.Region.AddAsync(regionEntity);
+            await _dbContext.SaveChangesAsync();
 
+            var client = techChallangeApplicationFactory.CreateClient();
 
-        //    var response = await client.GetAsync("region/get-all?pageSize=10&page=1");
+            var responseid = await client.GetAsync($"region/get-by-id/{regionEntity.Id}");
 
-        //    var resp = await response.Content.ReadAsStringAsync();
+            var respId = await responseid.Content.ReadAsStringAsync();
 
-        //    var result = JsonSerializer.Deserialize<BaseResponsePagedDto<IEnumerable<RegionResponseDto>>>(resp,
-        //            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var resultId = JsonSerializer.Deserialize<BaseResponseDto<RegionResponseDto>>(respId,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-
-        //    var responseid = await client.GetAsync($"region/get-by-id/{result?.Data?.FirstOrDefault()?.Id}");
-
-        //    var respId = await responseid.Content.ReadAsStringAsync();
-
-        //    var resultId = JsonSerializer.Deserialize<BaseResponseDto<RegionResponseDto>>(respId,
-        //    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-        //    Assert.Equal(HttpStatusCode.OK, responseid.StatusCode);
-        //    Assert.Equal(result?.Data?.FirstOrDefault(), resultId?.Data);
-        //}
+            Assert.Equal(HttpStatusCode.OK, responseid.StatusCode);
+            Assert.Equal(regionEntity.Id, resultId?.Data.Id);
+        }
     }
 }

@@ -1,15 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Hosting;
 using Testcontainers.MsSql;
-using Testcontainers.Redis;
 using Microsoft.EntityFrameworkCore;
 using TechChallange.Infrastructure.Context;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Data.SqlClient;
-using TechChallange.Domain.Region.Entity;
-using TechChallange.Infrastructure.Cache;
-using TechChallange.Domain.Cache;
-using Microsoft.Extensions.Caching.Distributed;
 using DotNet.Testcontainers.Builders;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Hosting;
