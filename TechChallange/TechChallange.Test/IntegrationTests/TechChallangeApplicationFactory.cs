@@ -15,7 +15,8 @@ namespace TechChallange.Test.IntegrationTests
 {
     public class TechChallangeApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
-        private readonly MsSqlContainer _sqlContainer = new MsSqlBuilder().Build();
+        private readonly MsSqlContainer _sqlContainer = new MsSqlBuilder()
+           .WithNetwork("bridge") .Build();
         private readonly RedisContainer _redisContainer = new RedisBuilder().Build();
 
         private string? _connectionString;
@@ -46,7 +47,6 @@ namespace TechChallange.Test.IntegrationTests
                     services.Remove(descriptorRedis);
                 }
 
-                // Adicionando a nova configuração do Redis
                 services.AddStackExchangeRedisCache(options =>
                 {
                     options.InstanceName = nameof(CacheRepository);
@@ -59,22 +59,9 @@ namespace TechChallange.Test.IntegrationTests
             });
 
             using var connection = new SqlConnection(_connectionString);
-  
-        //throw new Exception(_connectionString);
+
 
             var host = base.CreateHost(builder);
-
-
-            using (var scope = host.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
-                context.Database.Migrate();
-
-                var region = new RegionEntity("SP", "11");
-
-                context.Region.Add(region);
-                context.SaveChanges();
-            }
 
             return host;
         }
@@ -87,6 +74,7 @@ namespace TechChallange.Test.IntegrationTests
             using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
 
+
             await _redisContainer.StartAsync();
             _connectionStringRedis = _redisContainer.GetConnectionString();
             Environment.SetEnvironmentVariable("ConnectionStrings.Cache", _connectionStringRedis);
@@ -94,23 +82,15 @@ namespace TechChallange.Test.IntegrationTests
 
             await WaitForDatabaseAsync();
 
-            try
+            using (var scope = Services.CreateScope())
             {
-                //using (var scope = Services.CreateScope())
-                //{
-                //    var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
-                //    await context.Database.EnsureCreatedAsync();
+                var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
+                await context.Database.EnsureCreatedAsync();
 
-                //    //var region = new RegionEntity("SP", "11");
+                var region = new RegionEntity("SP", "11");
 
-                //    //context.Region.Add(region);
-                //    //await context.SaveChangesAsync();
-                //}
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception($"{_connectionString} + ' ---' + {ex.Message}");
+                context.Region.Add(region);
+                await context.SaveChangesAsync();
             }
         }
 
@@ -128,14 +108,11 @@ namespace TechChallange.Test.IntegrationTests
                 try
                 {
                     await connection.OpenAsync();
-                    //throw new Exception("Abriu a conexão - here.");
-
-                    await connection.CloseAsync();
                     return;
                 }
                 catch
                 {
-                    await Task.Delay(15000);
+                    await Task.Delay(1000);
                 }
             }
             throw new Exception("Banco de dados não respondeu dentro do tempo esperado.");
