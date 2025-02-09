@@ -80,7 +80,7 @@ namespace TechChallange.Test.IntegrationTests
 
 
             await WaitForDatabaseAsync();
-          //  await Seed();
+            //await Seed();
         }
 
         private async Task Seed()
