@@ -74,7 +74,7 @@ namespace TechChallange.Test.IntegrationTests
             using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
 
-
+            throw new Exception("aa");
             await _redisContainer.StartAsync();
             _connectionStringRedis = _redisContainer.GetConnectionString();
             Environment.SetEnvironmentVariable("ConnectionStrings.Cache", _connectionStringRedis);
