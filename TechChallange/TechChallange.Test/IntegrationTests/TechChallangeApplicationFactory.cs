@@ -42,10 +42,10 @@ namespace TechChallange.Test.IntegrationTests
         //    .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
         //    .Build();
 
-        private readonly RedisContainer _redisContainer = new RedisBuilder().Build();
+        //private readonly RedisContainer _redisContainer = new RedisBuilder().Build();
 
         private string? _connectionString;
-        private string? _connectionStringRedis;
+      //  private string? _connectionStringRedis;
 
         protected override IHost CreateHost(IHostBuilder builder)
         {
@@ -71,22 +71,22 @@ namespace TechChallange.Test.IntegrationTests
                 );
 
 
-                var descriptorRedis = services.SingleOrDefault(options =>
-                    options.ServiceType == typeof(IDistributedCache));
+                //var descriptorRedis = services.SingleOrDefault(options =>
+                //    options.ServiceType == typeof(IDistributedCache));
 
-                if (descriptorRedis != null)
-                {
-                    services.Remove(descriptorRedis);
-                }
+                //if (descriptorRedis != null)
+                //{
+                //    services.Remove(descriptorRedis);
+                //}
 
-                services.AddStackExchangeRedisCache(options =>
-                {
-                    options.InstanceName = nameof(CacheRepository);
-                    options.Configuration = _connectionStringRedis;
-                });
+                //services.AddStackExchangeRedisCache(options =>
+                //{
+                //    options.InstanceName = nameof(CacheRepository);
+                //    options.Configuration = _connectionStringRedis;
+                //});
 
-                services.AddScoped<ICacheRepository, CacheRepository>();
-                services.AddScoped<ICacheWrapper, CacheWrapper>();
+                //services.AddScoped<ICacheRepository, CacheRepository>();
+                //services.AddScoped<ICacheWrapper, CacheWrapper>();
 
             });
 
@@ -107,9 +107,9 @@ namespace TechChallange.Test.IntegrationTests
             await connection.OpenAsync();
 
 
-            await _redisContainer.StartAsync();
-            _connectionStringRedis = _redisContainer.GetConnectionString();
-            Environment.SetEnvironmentVariable("ConnectionStrings.Cache", _connectionStringRedis);
+         //   await _redisContainer.StartAsync();
+          //  _connectionStringRedis = _redisContainer.GetConnectionString();
+         //   Environment.SetEnvironmentVariable("ConnectionStrings.Cache", _connectionStringRedis);
 
 
             await WaitForDatabaseAsync();
@@ -134,7 +134,7 @@ namespace TechChallange.Test.IntegrationTests
         public async new Task DisposeAsync()
         {
             await _sqlContainer.StopAsync();
-            await _redisContainer.StopAsync();
+        //    await _redisContainer.StopAsync();
         }
 
         private async Task WaitForDatabaseAsync()
