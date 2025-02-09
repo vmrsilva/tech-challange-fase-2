@@ -32,7 +32,10 @@ jobs:
       run: dotnet build ./TechChallange/TechChallange.sln --no-restore --configuration Release
 
     - name: Set up Docker
-      run: docker info
+      run: |
+        docker info
+        docker network ls
+
 
     - name: Run Dot Net Tests
       run: dotnet test ./TechChallange/TechChallange.sln --no-build --configuration Release --logger trx
