@@ -41,7 +41,7 @@ jobs:
       run: dotnet test ./TechChallange/TechChallange.sln --no-build --configuration Release --logger trx
       env:
         DOTNET_EnablePreviewFeatures: "true"
-        TESTCONTAINERS_HOST_OVERRIDE: "host.docker.internal"
+        #TESTCONTAINERS_HOST_OVERRIDE: "host.docker.internal"
         #TESTCONTAINERS_RYUK_DISABLED: "true"
 
     - name: Save tests results
