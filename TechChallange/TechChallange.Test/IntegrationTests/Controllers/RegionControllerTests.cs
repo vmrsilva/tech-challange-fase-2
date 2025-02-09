@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Net;
 using System.Text.Json;
 using TechChallange.Api.Controllers.Region.Dto;
 using TechChallange.Api.Response;
@@ -6,37 +7,35 @@ using TechChallange.Domain.Region.Entity;
 
 namespace TechChallange.Test.IntegrationTests.Controllers
 {
-    public class RegionControllerTests (TechChallangeApplicationFactory techChallangeApplicationFactory): BaseIntegrationTest(techChallangeApplicationFactory)
+    public class RegionControllerTests(TechChallangeApplicationFactory techChallangeApplicationFactory) : BaseIntegrationTest(techChallangeApplicationFactory)
     {
 
-        [Fact]
-        public async Task Test()
+        [Fact(DisplayName = "Should Return All Activy Regions Paged")]
+        public async Task ShouldReturnAllActiviesRegionsPaged()
         {
 
-                var client =techChallangeApplicationFactory.CreateClient();
-                await _dbContext.Region.AddAsync(new RegionEntity("SP", "11"));
-                await _dbContext.SaveChangesAsync();           
+            var client = techChallangeApplicationFactory.CreateClient();
+            await _dbContext.Region.AddAsync(new RegionEntity("SP", "11"));
+            await _dbContext.SaveChangesAsync();
+
+            var count = await _dbContext.Region.CountAsync(c => c.IsDeleted == false);
 
 
-               var response = await client.GetAsync("region/get-all?pageSize=10&page=1");
+            var response = await client.GetAsync("region/get-all?pageSize=10&page=1");
 
-                var resp = await response.Content.ReadAsStringAsync();
+            var resp = await response.Content.ReadAsStringAsync();
 
-               var result = JsonSerializer.Deserialize<BaseResponsePagedDto<IEnumerable<RegionResponseDto>>>(resp,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var result = JsonSerializer.Deserialize<BaseResponsePagedDto<IEnumerable<RegionResponseDto>>>(resp,
+                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                var resulxxt = await _regionService.GetAllPagedAsync(10, 1);
 
-                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-               Assert.NotNull(result?.Data);
-               Assert.Equal(1,result?.Data.Count());
-
-                Assert.NotNull(resulxxt);
-
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.NotNull(result?.Data);
+            Assert.Equal(count, result?.Data.Count());
         }
 
-        [Fact]
-        public async Task Teste2()
+        [Fact(DisplayName = "Should Return Region By Id")]
+        public async Task ShouldReturnRegionById()
         {
             var regionEntity = new RegionEntity("SP", "11");
             await _dbContext.Region.AddAsync(regionEntity);
