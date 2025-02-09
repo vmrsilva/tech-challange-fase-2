@@ -20,13 +20,13 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         {
             try
             {
-
+                var client =techChallangeApplicationFactory.CreateClient();
                 await _dbContext.Region.AddAsync(new RegionEntity("SP", "11"));
            
                 //System.Console.WriteLine("Teste 1");
                 //var client = _techChallangeApplicationFactory.CreateClient();
 
-                //var response = await client.GetAsync("region/get-all?pageSize=10&page=1");
+                var response = await client.GetAsync("region/get-all?pageSize=10&page=1");
 
                 //var resp = await response.Content.ReadAsStringAsync();
 
