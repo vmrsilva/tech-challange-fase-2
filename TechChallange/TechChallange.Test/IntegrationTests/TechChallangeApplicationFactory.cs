@@ -12,147 +12,128 @@ using TechChallange.Domain.Cache;
 using Microsoft.Extensions.Caching.Distributed;
 using DotNet.Testcontainers.Builders;
 using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Hosting;
 
 namespace TechChallange.Test.IntegrationTests
 {
     public class TechChallangeApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
-        private readonly MsSqlContainer _sqlContainer;
+        private readonly MsSqlContainer _msSqlContainer;
         public TechChallangeApplicationFactory()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                _sqlContainer = new MsSqlBuilder()
-                         .WithImage("mcr.microsoft.com/mssql/server:2019-latest")
-                         .WithPassword("password(!)Strong")
-                         .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
-                         .Build();
+                _msSqlContainer = new MsSqlBuilder()
+                    .WithImage("mcr.microsoft.com/mssql/server:2019-latest")
+                      .WithPassword("password(!)Strong")
+                             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
+                             .Build();
             }
             else
             {
-                _sqlContainer = new MsSqlBuilder()
-                     .WithImage("mcr.microsoft.com/mssql/server:2019-latest")
-                    .WithPortBinding(1433, true)
-                    .Build();
+                _msSqlContainer = new MsSqlBuilder().Build();
             }
         }
-        //private readonly MsSqlContainer _sqlContainer = new MsSqlBuilder()
-        //    .WithImage("mcr.microsoft.com/mssql/server:2019-latest")
-        //    .WithPassword("password(!)Strong")
-        //    .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
-        //    .Build();
 
-        //private readonly RedisContainer _redisContainer = new RedisBuilder().Build();
-
-        private string? _connectionString;
-      //  private string? _connectionStringRedis;
-
-        protected override IHost CreateHost(IHostBuilder builder)
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(services =>
             {
-
-                var descriptorSqlaa = services.SingleOrDefault(d =>
-                   d.ServiceType == typeof(TechChallangeContext));
-
-                services.Remove(descriptorSqlaa);
-
-
-                var descriptorSql = services.SingleOrDefault(d =>
-                    d.ServiceType == typeof(DbContextOptions<TechChallangeContext>));
-
-                if (descriptorSql != null)
-                {
-                    services.Remove(descriptorSql);
-                }
-
-                services.AddDbContext<TechChallangeContext>(options =>
-                    options.UseSqlServer(_connectionString!)
-                );
-
-
-                //var descriptorRedis = services.SingleOrDefault(options =>
-                //    options.ServiceType == typeof(IDistributedCache));
-
-                //if (descriptorRedis != null)
-                //{
-                //    services.Remove(descriptorRedis);
-                //}
-
-                //services.AddStackExchangeRedisCache(options =>
-                //{
-                //    options.InstanceName = nameof(CacheRepository);
-                //    options.Configuration = _connectionStringRedis;
-                //});
-
-                //services.AddScoped<ICacheRepository, CacheRepository>();
-                //services.AddScoped<ICacheWrapper, CacheWrapper>();
-
+                ConfigureDbContext(services);
             });
 
-            using var connection = new SqlConnection(_connectionString);
-
-
-            var host = base.CreateHost(builder);
-
-            return host;
+            //builder.UseEnvironment("Development");
+            base.ConfigureWebHost(builder);
         }
+
+        private void ConfigureDbContext(IServiceCollection services)
+        {
+            var context = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(TechChallangeContext));
+            if (context != null)
+            {
+                services.Remove(context);
+                var options = services.Where(r => (r.ServiceType == typeof(DbContextOptions))
+                  || (r.ServiceType.IsGenericType && r.ServiceType.GetGenericTypeDefinition() == typeof(DbContextOptions<>))).ToArray();
+                foreach (var option in options)
+                {
+                    services.Remove(option);
+                }
+            }
+
+            services.AddDbContext<TechChallangeContext>(options =>
+            {
+                options.UseSqlServer(_msSqlContainer.GetConnectionString());
+            });
+
+            using (var serviceProvider = services.BuildServiceProvider())
+            {
+                var dbContext = serviceProvider.GetRequiredService<TechChallangeContext>();
+                dbContext.Database.Migrate();
+            }
+        }
+
+        //protected override IHost CreateHost(IHostBuilder builder)
+        //{
+        //    builder.ConfigureServices(services =>
+        //    {
+
+        //        var descriptorSqlaa = services.SingleOrDefault(d =>
+        //           d.ServiceType == typeof(TechChallangeContext));
+
+        //        services.Remove(descriptorSqlaa);
+
+
+        //        var descriptorSql = services.SingleOrDefault(d =>
+        //            d.ServiceType == typeof(DbContextOptions<TechChallangeContext>));
+
+        //        if (descriptorSql != null)
+        //        {
+        //            services.Remove(descriptorSql);
+        //        }
+
+        //        services.AddDbContext<TechChallangeContext>(options =>
+        //            options.UseSqlServer(_connectionString!)
+        //        );
+
+
+        //        //var descriptorRedis = services.SingleOrDefault(options =>
+        //        //    options.ServiceType == typeof(IDistributedCache));
+
+        //        //if (descriptorRedis != null)
+        //        //{
+        //        //    services.Remove(descriptorRedis);
+        //        //}
+
+        //        //services.AddStackExchangeRedisCache(options =>
+        //        //{
+        //        //    options.InstanceName = nameof(CacheRepository);
+        //        //    options.Configuration = _connectionStringRedis;
+        //        //});
+
+        //        //services.AddScoped<ICacheRepository, CacheRepository>();
+        //        //services.AddScoped<ICacheWrapper, CacheWrapper>();
+
+        //    });
+
+        //    using var connection = new SqlConnection(_connectionString);
+
+
+        //    var host = base.CreateHost(builder);
+
+        //    return host;
+        //}
 
         public async Task InitializeAsync()
         {
-            await _sqlContainer.StartAsync();
-            _connectionString = _sqlContainer.GetConnectionString();
-            Environment.SetEnvironmentVariable("ConnectionStrings.Database", _connectionString);
-            using var connection = new SqlConnection(_connectionString);
-            await connection.OpenAsync();
+            await _msSqlContainer.StartAsync();
+            var x = _msSqlContainer.GetConnectionString();
 
-
-         //   await _redisContainer.StartAsync();
-          //  _connectionStringRedis = _redisContainer.GetConnectionString();
-         //   Environment.SetEnvironmentVariable("ConnectionStrings.Cache", _connectionStringRedis);
-
-
-            await WaitForDatabaseAsync();
-            await Seed();
-        }
-
-        private async Task Seed()
-        {
-            using (var scope = Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
-
-                await context.Database.MigrateAsync();
-
-                var region = new RegionEntity("SP", "11");
-
-                context.Region.Add(region);
-                await context.SaveChangesAsync();
-            }
+            var aa = x;
         }
 
         public async new Task DisposeAsync()
         {
-            await _sqlContainer.StopAsync();
-        //    await _redisContainer.StopAsync();
-        }
-
-        private async Task WaitForDatabaseAsync()
-        {
-            using var connection = new SqlConnection(_connectionString);
-            for (int i = 0; i < 10; i++)
-            {
-                try
-                {
-                    await connection.OpenAsync();
-                    return;
-                }
-                catch
-                {
-                    await Task.Delay(1000);
-                }
-            }
-            throw new Exception("Banco de dados não respondeu dentro do tempo esperado.");
+            await _msSqlContainer.StopAsync();
         }
     }
 

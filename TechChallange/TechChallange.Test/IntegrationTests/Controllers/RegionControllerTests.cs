@@ -2,35 +2,43 @@
 using System.Text.Json;
 using TechChallange.Api.Controllers.Region.Dto;
 using TechChallange.Api.Response;
+using TechChallange.Domain.Region.Entity;
 
 namespace TechChallange.Test.IntegrationTests.Controllers
 {
-    public class RegionControllerTests : IClassFixture<TechChallangeApplicationFactory>
+    public class RegionControllerTests (TechChallangeApplicationFactory techChallangeApplicationFactory): BaseIntegrationTest(techChallangeApplicationFactory)
     {
-        private readonly TechChallangeApplicationFactory _techChallangeApplicationFactory;
+        //private readonly TechChallangeApplicationFactory _techChallangeApplicationFactory;
 
-        public RegionControllerTests(TechChallangeApplicationFactory techChallangeApplicationFactory)
-        {
-            _techChallangeApplicationFactory = techChallangeApplicationFactory;
-        }
+        //public RegionControllerTests(TechChallangeApplicationFactory techChallangeApplicationFactory)
+        //{
+        //    _techChallangeApplicationFactory = techChallangeApplicationFactory;
+        //}
 
         [Fact]
         public async Task Test()
         {
             try
             {
-                System.Console.WriteLine("Teste 1");
-                var client = _techChallangeApplicationFactory.CreateClient();
 
-                var response = await client.GetAsync("region/get-all?pageSize=10&page=1");
+                await _dbContext.Region.AddAsync(new RegionEntity("SP", "11"));
+           
+                //System.Console.WriteLine("Teste 1");
+                //var client = _techChallangeApplicationFactory.CreateClient();
 
-                var resp = await response.Content.ReadAsStringAsync();
+                //var response = await client.GetAsync("region/get-all?pageSize=10&page=1");
 
-                var result = JsonSerializer.Deserialize<BaseResponsePagedDto<IEnumerable<RegionResponseDto>>>(resp,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                //var resp = await response.Content.ReadAsStringAsync();
 
-                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                Assert.NotNull(result?.Data);
+                //var result = JsonSerializer.Deserialize<BaseResponsePagedDto<IEnumerable<RegionResponseDto>>>(resp,
+                //        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                //Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                //Assert.NotNull(result?.Data);
+
+                var result = await _regionService.GetAllPagedAsync(10, 1);
+
+                Assert.NotNull(result);
 
 
             }

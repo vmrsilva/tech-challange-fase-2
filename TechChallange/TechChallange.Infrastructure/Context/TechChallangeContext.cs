@@ -8,6 +8,7 @@ namespace TechChallange.Infrastructure.Context
     {
         public TechChallangeContext() : base()
         {
+            Database.Migrate();
         }
 
         public TechChallangeContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
