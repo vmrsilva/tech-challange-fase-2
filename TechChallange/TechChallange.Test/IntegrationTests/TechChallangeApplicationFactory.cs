@@ -6,12 +6,17 @@ using Microsoft.Extensions.DependencyInjection;
 using DotNet.Testcontainers.Builders;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Hosting;
+using Testcontainers.Redis;
+using Microsoft.Extensions.Caching.Distributed;
+using TechChallange.Domain.Cache;
+using TechChallange.Infrastructure.Cache;
 
 namespace TechChallange.Test.IntegrationTests
 {
     public class TechChallangeApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
         private readonly MsSqlContainer _msSqlContainer;
+        private readonly RedisContainer _redisContainer;
         public TechChallangeApplicationFactory()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -26,6 +31,8 @@ namespace TechChallange.Test.IntegrationTests
             {
                 _msSqlContainer = new MsSqlBuilder().Build();
             }
+
+            _redisContainer = new RedisBuilder().Build();
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -33,6 +40,7 @@ namespace TechChallange.Test.IntegrationTests
             builder.ConfigureServices(services =>
             {
                 ConfigureDbContext(services);
+                ConfigureCache(services);
             });
 
             //builder.UseEnvironment("Development");
@@ -63,6 +71,24 @@ namespace TechChallange.Test.IntegrationTests
                 var dbContext = serviceProvider.GetRequiredService<TechChallangeContext>();
                 dbContext.Database.Migrate();
             }
+        }
+
+        private void ConfigureCache(IServiceCollection services)
+        {
+            var cache = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IDistributedCache));
+            if (cache != null)
+            {
+                services.Remove(cache);
+            }
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = _redisContainer.GetConnectionString();
+            });
+
+
+            services.AddScoped<ICacheRepository, CacheRepository>();
+            services.AddScoped<ICacheWrapper, CacheWrapper>();
         }
 
         //protected override IHost CreateHost(IHostBuilder builder)
@@ -122,11 +148,14 @@ namespace TechChallange.Test.IntegrationTests
             var x = _msSqlContainer.GetConnectionString();
 
             var aa = x;
+
+            await _redisContainer.StartAsync();
         }
 
         public async new Task DisposeAsync()
         {
             await _msSqlContainer.StopAsync();
+            await _redisContainer.StopAsync();
         }
     }
 
