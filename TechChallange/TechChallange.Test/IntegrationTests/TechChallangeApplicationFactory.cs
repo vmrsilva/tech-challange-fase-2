@@ -25,6 +25,13 @@ namespace TechChallange.Test.IntegrationTests
         {
             builder.ConfigureServices(services =>
             {
+
+                var descriptorSqlaa = services.SingleOrDefault(d =>
+                   d.ServiceType == typeof(TechChallangeContext));
+
+                services.Remove(descriptorSqlaa);
+
+
                 var descriptorSql = services.SingleOrDefault(d =>
                     d.ServiceType == typeof(DbContextOptions<TechChallangeContext>));
 
@@ -80,7 +87,7 @@ namespace TechChallange.Test.IntegrationTests
 
 
             await WaitForDatabaseAsync();
-            //await Seed();
+            await Seed();
         }
 
         private async Task Seed()
