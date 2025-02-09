@@ -11,16 +11,37 @@ using TechChallange.Infrastructure.Cache;
 using TechChallange.Domain.Cache;
 using Microsoft.Extensions.Caching.Distributed;
 using DotNet.Testcontainers.Builders;
+using System.Runtime.InteropServices;
 
 namespace TechChallange.Test.IntegrationTests
 {
     public class TechChallangeApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
-        private readonly MsSqlContainer _sqlContainer = new MsSqlBuilder()
-            //.WithImage("mcr.microsoft.com/mssql/server:2019-latest")
-            .WithPassword("password(!)Strong")
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
-            .Build();
+        private readonly MsSqlContainer _sqlContainer;
+        public TechChallangeApplicationFactory()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                _sqlContainer = new MsSqlBuilder()
+                         .WithImage("mcr.microsoft.com/mssql/server:2019-latest")
+                         .WithPassword("password(!)Strong")
+                         .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
+                         .Build();
+            }
+            else
+            {
+                _sqlContainer = new MsSqlBuilder()
+                     .WithImage("mcr.microsoft.com/mssql/server:2019-latest")
+                    .WithPortBinding(1433, true)
+                    .Build();
+            }
+        }
+        //private readonly MsSqlContainer _sqlContainer = new MsSqlBuilder()
+        //    .WithImage("mcr.microsoft.com/mssql/server:2019-latest")
+        //    .WithPassword("password(!)Strong")
+        //    .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
+        //    .Build();
+
         private readonly RedisContainer _redisContainer = new RedisBuilder().Build();
 
         private string? _connectionString;
