@@ -84,8 +84,9 @@ namespace TechChallange.Test.IntegrationTests
             using (var scope = Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
-                await context.Database.EnsureCreatedAsync();
                 throw new Exception("aaaa");
+                await context.Database.EnsureCreatedAsync();
+                
                 var region = new RegionEntity("SP", "11");
 
                 context.Region.Add(region);
