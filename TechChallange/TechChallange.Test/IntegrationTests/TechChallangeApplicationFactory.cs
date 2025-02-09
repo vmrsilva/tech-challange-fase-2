@@ -89,7 +89,7 @@ namespace TechChallange.Test.IntegrationTests
             {
                 var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
 
-                await context.Database.EnsureCreatedAsync();
+                await context.Database.MigrateAsync();
 
                 var region = new RegionEntity("SP", "11");
 
