@@ -110,7 +110,7 @@ namespace TechChallange.Test.IntegrationTests
             }
         }
 
-        public async Task DisposeAsync()
+        public async new Task DisposeAsync()
         {
             await _sqlContainer.StopAsync();
             await _redisContainer.StopAsync();
