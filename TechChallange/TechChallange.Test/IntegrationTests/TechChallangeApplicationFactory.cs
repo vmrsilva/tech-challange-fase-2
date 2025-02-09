@@ -73,21 +73,24 @@ namespace TechChallange.Test.IntegrationTests
             using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
 
-       
+
             await _redisContainer.StartAsync();
             _connectionStringRedis = _redisContainer.GetConnectionString();
             Environment.SetEnvironmentVariable("ConnectionStrings.Cache", _connectionStringRedis);
 
 
             await WaitForDatabaseAsync();
-            
+            await Seed();
+        }
+
+        private async Task Seed()
+        {
             using (var scope = Services.CreateScope())
             {
-                throw new Exception("aaaaaw");
                 var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
-             
+
                 await context.Database.EnsureCreatedAsync();
-                
+
                 var region = new RegionEntity("SP", "11");
 
                 context.Region.Add(region);
