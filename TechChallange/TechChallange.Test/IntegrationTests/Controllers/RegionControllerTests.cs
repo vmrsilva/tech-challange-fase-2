@@ -22,23 +22,27 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             {
                 var client =techChallangeApplicationFactory.CreateClient();
                 await _dbContext.Region.AddAsync(new RegionEntity("SP", "11"));
+                await _dbContext.SaveChangesAsync();
            
                 //System.Console.WriteLine("Teste 1");
                 //var client = _techChallangeApplicationFactory.CreateClient();
 
-                var response = await client.GetAsync("region/get-all?pageSize=10&page=1");
+               var response = await client.GetAsync("region/get-all?pageSize=10&page=1");
 
-                //var resp = await response.Content.ReadAsStringAsync();
+                var resp = await response.Content.ReadAsStringAsync();
 
-                //var result = JsonSerializer.Deserialize<BaseResponsePagedDto<IEnumerable<RegionResponseDto>>>(resp,
-                //        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+               var result = JsonSerializer.Deserialize<BaseResponsePagedDto<IEnumerable<RegionResponseDto>>>(resp,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                //Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                //Assert.NotNull(result?.Data);
+                var resulxxt = await _regionService.GetAllPagedAsync(10, 1);
 
-                var result = await _regionService.GetAllPagedAsync(10, 1);
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+               Assert.NotNull(result?.Data);
+               Assert.Equal(1,result?.Data.Count());
 
-                Assert.NotNull(result);
+                // var result = await _regionService.GetAllPagedAsync(10, 1);
+
+                Assert.NotNull(resulxxt);
 
 
             }
