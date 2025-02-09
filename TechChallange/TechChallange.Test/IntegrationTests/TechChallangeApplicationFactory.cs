@@ -15,8 +15,7 @@ namespace TechChallange.Test.IntegrationTests
 {
     public class TechChallangeApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
-        private readonly MsSqlContainer _sqlContainer = new MsSqlBuilder()
-           .WithNetwork("bridge") .Build();
+        private readonly MsSqlContainer _sqlContainer = new MsSqlBuilder().Build();
         private readonly RedisContainer _redisContainer = new RedisBuilder().Build();
 
         private string? _connectionString;
@@ -74,14 +73,14 @@ namespace TechChallange.Test.IntegrationTests
             using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
 
-            throw new Exception("aa");
+       
             await _redisContainer.StartAsync();
             _connectionStringRedis = _redisContainer.GetConnectionString();
             Environment.SetEnvironmentVariable("ConnectionStrings.Cache", _connectionStringRedis);
 
 
             await WaitForDatabaseAsync();
-
+            throw new Exception("aa");
             using (var scope = Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
