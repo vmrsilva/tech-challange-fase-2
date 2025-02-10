@@ -74,8 +74,6 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             _dbContext.Entry(regionEntity).State = EntityState.Detached;
             var regionDb = await _dbContext.Region.AsNoTracking().FirstOrDefaultAsync(r => r.Id == regionEntity.Id);
 
-
-
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
             Assert.True(regionDb.IsDeleted);
         }
