@@ -55,6 +55,28 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             Assert.Equal(regionEntity.Id, resultId?.Data.Id);
         }
 
+        [Fact(DisplayName = "Should Return Region By Id Return Bad Request When Id Does Not Exist")]
+        public async Task ShouldReturnRegionByIdReturnBadRequestWhenIdDoesNotExist()
+        {
+            //var regionEntity = new RegionEntity("SP", "11");
+            //await _dbContext.Region.AddAsync(regionEntity);
+            //await _dbContext.SaveChangesAsync();
+
+            var client = techChallangeApplicationFactory.CreateClient();
+
+            var responseid = await client.GetAsync($"region/get-by-id/{Guid.NewGuid()}");
+
+            var respId = await responseid.Content.ReadAsStringAsync();
+
+            var resultId = JsonSerializer.Deserialize<BaseResponseDto<RegionResponseDto>>(respId,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            Assert.Equal(HttpStatusCode.BadRequest, responseid.StatusCode);
+            Assert.False(resultId.Success);
+            Assert.Equal("Região não encontrada na base dados.", resultId.Error);
+            Assert.Null(resultId.Data); 
+        }
+
         [Fact(DisplayName = "Should Delete Logically Region By Id With Success")]
         public async Task ShouldDeleteLogicallyRegionByIdWithSuccess()
         {
