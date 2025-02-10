@@ -1,4 +1,4 @@
-name: Git Actions Tech Challenge 🏗️ - 🧪 - 🐋 - 🚀
+name: Git Actions Tech Challenge - 🚀
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    name: CI - Build and Run Test 
+    name: Build and Run Test 
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +28,7 @@ jobs:
     - name: Restore packages
       run: dotnet restore ./TechChallange/TechChallange.sln
 
-    - name: Build Solution 
+    - name: Build Solution - 🏗️
       run: dotnet build ./TechChallange/TechChallange.sln --no-restore --configuration Release
 
     - name: Set up Docker
@@ -37,7 +37,7 @@ jobs:
         docker network ls
 
 
-    - name: Run Dot Net Tests
+    - name: Run Dot Net Tests - 🧪
       run: dotnet test ./TechChallange/TechChallange.sln --no-build --configuration Release --logger trx
       env:
         DOTNET_EnablePreviewFeatures: "true"
@@ -53,7 +53,7 @@ jobs:
 
   build:
     needs: test
-    name: CD - Build image and push
+    name: Build docker image - 🐋
     runs-on: ubuntu-latest
 
     steps:
@@ -78,5 +78,5 @@ jobs:
         with:
           context: ./TechChallange
           file: ./TechChallange/TechChallange.Api/Dockerfile
-          push: true
+          push: false
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/techchallange:latest, ${{ secrets.DOCKERHUB_USERNAME }}/techchallange:${{ github.run_number }}
