@@ -113,7 +113,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             Assert.NotEqual(regionEntity.Name, regionDb?.Name);
             Assert.Equal(regionUpdateDto.Ddd, regionDb?.Ddd);
             Assert.NotEqual(regionEntity.Ddd, regionDb?.Ddd);
-            
+            //Assert.Null(response);
         }
     }
 }
