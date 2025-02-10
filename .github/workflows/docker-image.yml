@@ -1,4 +1,4 @@
-name: Git Actions Tech Challenge
+name: Git Actions Tech Challenge 🏗️ - 🧪 - 🐋 - 🚀
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    name: CI - Build and Run Test
+    name: CI - Build and Run Test 
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +28,7 @@ jobs:
     - name: Restore packages
       run: dotnet restore ./TechChallange/TechChallange.sln
 
-    - name: Build Solution
+    - name: Build Solution 
       run: dotnet build ./TechChallange/TechChallange.sln --no-restore --configuration Release
 
     - name: Set up Docker
