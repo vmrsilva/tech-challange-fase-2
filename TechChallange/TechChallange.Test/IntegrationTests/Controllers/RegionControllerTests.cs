@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Text;
 using System.Text.Json;
 using TechChallange.Api.Controllers.Region.Dto;
 using TechChallange.Api.Response;
@@ -77,6 +78,43 @@ namespace TechChallange.Test.IntegrationTests.Controllers
 
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
             Assert.True(regionDb.IsDeleted);
+        }
+
+        [Fact]
+        public async Task ShouldUpdate()
+        {
+            var regionEntity = new RegionEntity("SP", "11");
+            await _dbContext.Region.AddAsync(regionEntity);
+            await _dbContext.SaveChangesAsync();
+
+            var client = techChallangeApplicationFactory.CreateClient();
+
+            var regionUpdateDto = new RegionUpdateDto
+            {
+                Id = regionEntity.Id,
+                Name = "São Paulo",
+                Ddd = "95"
+            };
+
+            var json = JsonSerializer.Serialize(regionUpdateDto);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync("region", data);
+
+            var resp = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<BaseResponseDto<RegionResponseDto>>(resp,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            _dbContext.Entry(regionEntity).State = EntityState.Detached;
+            var regionDb = await _dbContext.Region.AsNoTracking().FirstOrDefaultAsync(r => r.Id == regionEntity.Id);
+
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+            Assert.Equal(regionEntity.Id, regionDb?.Id);
+            Assert.Equal(regionUpdateDto.Name, regionDb?.Name);
+            Assert.NotEqual(regionEntity.Name, regionDb?.Name);
+            Assert.Equal(regionUpdateDto.Ddd, regionDb?.Ddd);
+            Assert.NotEqual(regionEntity.Ddd, regionDb?.Ddd);
         }
     }
 }
