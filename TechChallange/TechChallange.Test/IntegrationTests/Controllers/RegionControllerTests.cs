@@ -55,8 +55,8 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             Assert.Equal(regionEntity.Id, resultId?.Data.Id);
         }
 
-        [Fact]
-        public async Task ShouldDeleteLogicalRegionById()
+        [Fact(DisplayName = "Should Delete Logically Region By Id With Success")]
+        public async Task ShouldDeleteLogicallyRegionByIdWithSuccess()
         {
             var regionEntity = new RegionEntity("SP", "11");
             await _dbContext.Region.AddAsync(regionEntity);
@@ -78,8 +78,8 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             Assert.True(regionDb.IsDeleted);
         }
 
-        [Fact]
-        public async Task ShouldUpdate()
+        [Fact(DisplayName = "Should Update Region With Success")]
+        public async Task ShouldUpdateRegionWithSuccess()
         {
             var regionEntity = new RegionEntity("SP", "11");
             await _dbContext.Region.AddAsync(regionEntity);
