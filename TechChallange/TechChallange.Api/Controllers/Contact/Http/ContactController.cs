@@ -46,12 +46,12 @@ namespace TechChallange.Api.Controllers.Contact.Http
                     Error = ex.Message
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(400, new BaseResponse
                 {
                     Success = false,
-                    Error = "Ocorreu um erro!"
+                    Error = "Ocorreu um erro!" + ex.Message
                 });
             }
 
