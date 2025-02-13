@@ -41,9 +41,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         [Fact(DisplayName = "Should Return Region By Id")]
         public async Task ShouldReturnRegionById()
         {
-            var regionEntity = new RegionEntity("SP", "11");
-            await _dbContext.Region.AddAsync(regionEntity);
-            await _dbContext.SaveChangesAsync();
+            var regionEntity = await _dbContext.Region.FirstOrDefaultAsync(r => r.Ddd == "11");
 
             var client = techChallangeApplicationFactory.CreateClient();
 
@@ -81,9 +79,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         [Fact(DisplayName = "Should Delete Logically Region By Id With Success")]
         public async Task ShouldDeleteLogicallyRegionByIdWithSuccess()
         {
-            var regionEntity = new RegionEntity("SP", "11");
-            await _dbContext.Region.AddAsync(regionEntity);
-            await _dbContext.SaveChangesAsync();
+            var regionEntity = await _dbContext.Region.FirstOrDefaultAsync(r => r.Ddd == "11");
 
             var client = techChallangeApplicationFactory.CreateClient();
 
@@ -103,9 +99,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         [Fact(DisplayName = "Should Delete Region By Id Return Bad Request When It Does Not Exist")]
         public async Task ShouldDeleteRegionByIdReturnBadRequestWhenItDoesNotExist()
         {
-            var regionEntity = new RegionEntity("SP", "11");
-            await _dbContext.Region.AddAsync(regionEntity);
-            await _dbContext.SaveChangesAsync();
+            var regionEntity = await _dbContext.Region.FirstOrDefaultAsync(r => r.Ddd == "11");
 
             var client = techChallangeApplicationFactory.CreateClient();
 
@@ -127,16 +121,14 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         [Fact(DisplayName = "Should Update Region With Success")]
         public async Task ShouldUpdateRegionWithSuccess()
         {
-            var regionEntity = new RegionEntity("SP", "11");
-            await _dbContext.Region.AddAsync(regionEntity);
-            await _dbContext.SaveChangesAsync();
+            var regionEntity = await _dbContext.Region.FirstOrDefaultAsync(r => r.Ddd == "47");
 
             var client = techChallangeApplicationFactory.CreateClient();
 
             var regionUpdateDto = new RegionUpdateDto
             {
                 Id = regionEntity.Id,
-                Name = "São Paulo",
+                Name = "Update Test",
                 Ddd = "95"
             };
 
@@ -196,8 +188,6 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         [Fact(DisplayName = "Should Return Region By Ddd With Contacts")]
         public async Task ShouldReturnRegionByDddWithContacts()
         {
-            //await SeedRegion();
-
             var client = techChallangeApplicationFactory.CreateClient();
 
             var response = await client.GetAsync($"region/get-ddd-with-contacts/{11}");
@@ -230,8 +220,6 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         [Fact(DisplayName = "Should Return Region By Ddd ")]
         public async Task ShouldReturnRegionByDdd()
         {
-           // await SeedRegion();
-
             var client = techChallangeApplicationFactory.CreateClient();
 
             var response = await client.GetAsync($"region/get-by-ddd/{11}");
@@ -248,10 +236,9 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         [Fact(DisplayName = "Should Get Region By Ddd Return Data Equal Null When Ddd Does Not Exist")]
         public async Task ShouldGetRegionByDddReturnDataEqualNullWhenDddDoesNotExist()
         {
-          //  await SeedRegion();
 
             var client = techChallangeApplicationFactory.CreateClient();
-            
+
             var response = await client.GetAsync($"region/get-by-ddd/{99}");
             var responseParsed = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<BaseResponseDto<RegionResponseDto>>(responseParsed,
@@ -261,26 +248,5 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             Assert.True(result?.Success);
             Assert.Null(result?.Data);
         }
-
-        //private async Task SeedRegion()
-        //{
-        //    var regionOne = new RegionEntity("SP", "11");
-        //    var regionTow = new RegionEntity("SC", "47");
-
-        //    await _dbContext.Region.AddRangeAsync(regionTow, regionOne);
-        //    await _dbContext.SaveChangesAsync();
-
-        //  //  await SeedContact(regionOne.Id);
-        //}
-
-        //private async Task SeedContact(Guid regionId)
-        //{
-        //    var contactOne = new ContactEntity("Test", "4141-3338", "test@email.com", regionId);
-
-        //    await _dbContext.Contact.AddAsync(contactOne);
-
-        //}
-
-
     }
 }
