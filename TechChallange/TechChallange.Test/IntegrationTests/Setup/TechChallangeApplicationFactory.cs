@@ -13,7 +13,7 @@ using TechChallange.Infrastructure.Cache;
 using TechChallange.Domain.Contact.Entity;
 using TechChallange.Domain.Region.Entity;
 
-namespace TechChallange.Test.IntegrationTests
+namespace TechChallange.Test.IntegrationTests.Setup
 {
     public class TechChallangeApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
@@ -55,8 +55,8 @@ namespace TechChallange.Test.IntegrationTests
             if (context != null)
             {
                 services.Remove(context);
-                var options = services.Where(r => (r.ServiceType == typeof(DbContextOptions))
-                  || (r.ServiceType.IsGenericType && r.ServiceType.GetGenericTypeDefinition() == typeof(DbContextOptions<>))).ToArray();
+                var options = services.Where(r => r.ServiceType == typeof(DbContextOptions)
+                  || r.ServiceType.IsGenericType && r.ServiceType.GetGenericTypeDefinition() == typeof(DbContextOptions<>)).ToArray();
                 foreach (var option in options)
                 {
                     services.Remove(option);
@@ -162,16 +162,16 @@ namespace TechChallange.Test.IntegrationTests
             await _redisContainer.StopAsync();
         }
 
-        private  void SeedRegion(TechChallangeContext context)
+        private void SeedRegion(TechChallangeContext context)
         {
             var regionOne = new RegionEntity("SP", "11");
             var regionTow = new RegionEntity("SC", "47");
-            context.Region.AddRange(regionOne, regionTow);  
+            context.Region.AddRange(regionOne, regionTow);
 
             var contactOne = new ContactEntity("Test", "4141-3338", "test@email.com", regionOne.Id);
             context.Contact.Add(contactOne);
 
-             context.SaveChanges();
+            context.SaveChanges();
         }
 
 

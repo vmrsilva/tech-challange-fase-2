@@ -10,6 +10,7 @@ using TechChallange.Api.Response;
 using TechChallange.Domain.Contact.Entity;
 using TechChallange.Domain.Region.Entity;
 using TechChallange.Domain.Region.Exception;
+using TechChallange.Test.IntegrationTests.Setup;
 
 namespace TechChallange.Test.IntegrationTests.Controllers
 {

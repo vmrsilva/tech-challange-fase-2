@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using TechChallange.Domain.Region.Service;
 using TechChallange.Infrastructure.Context;
 
-namespace TechChallange.Test.IntegrationTests
+namespace TechChallange.Test.IntegrationTests.Setup
 {
-    public class BaseIntegrationTest : IClassFixture<TechChallangeApplicationFactory>, IDisposable    
+    public class BaseIntegrationTest : IClassFixture<TechChallangeApplicationFactory>, IDisposable
     {
         private readonly IServiceScope _scope;
         protected readonly JsonSerializerOptions _jsonSerializerOptions;
