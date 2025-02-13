@@ -10,6 +10,8 @@ using Testcontainers.Redis;
 using Microsoft.Extensions.Caching.Distributed;
 using TechChallange.Domain.Cache;
 using TechChallange.Infrastructure.Cache;
+using TechChallange.Domain.Contact.Entity;
+using TechChallange.Domain.Region.Entity;
 
 namespace TechChallange.Test.IntegrationTests
 {
@@ -70,6 +72,8 @@ namespace TechChallange.Test.IntegrationTests
             {
                 var dbContext = serviceProvider.GetRequiredService<TechChallangeContext>();
                 dbContext.Database.Migrate();
+
+                SeedRegion(dbContext);
             }
         }
 
@@ -157,6 +161,23 @@ namespace TechChallange.Test.IntegrationTests
             await _msSqlContainer.StopAsync();
             await _redisContainer.StopAsync();
         }
+
+        private  void SeedRegion(TechChallangeContext context)
+        {
+            var regionOne = new RegionEntity("SP", "11");
+            var regionTow = new RegionEntity("SC", "47");
+            context.Region.AddRange(regionOne, regionTow);  
+
+            var contactOne = new ContactEntity("Test", "4141-3338", "test@email.com", regionOne.Id);
+            context.Contact.Add(contactOne);
+
+             context.SaveChanges();
+        }
+
+
+
     }
+
+
 
 }
