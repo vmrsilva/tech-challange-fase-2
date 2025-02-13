@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using TechChallange.Api.Controllers.Contact.Dto;
 using TechChallange.Api.Controllers.Region.Dto;
 using TechChallange.Api.Response;
 using TechChallange.Domain.Contact.Entity;
@@ -248,6 +249,33 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.True(result?.Success);
             Assert.Null(result?.Data);
+        }
+
+        [Fact(DisplayName = "Should Create New Region With Success")]
+        public async Task ShouldCreateNewRegiontWithSuccess()
+        {
+
+            var client = techChallangeApplicationFactory.CreateClient();
+
+            var newRegion = new RegionCreateDto
+            {
+                Name = "Teste Mock",
+                Ddd = "40"
+            };
+
+            var content = new StringContent(JsonSerializer.Serialize(newRegion), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("region", content);
+
+            var responseParsed = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<BaseResponseDto<IEnumerable<RegionResponseDto>>>(responseParsed,
+                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            var contactDb = await _dbContext.Region.AsNoTracking().FirstOrDefaultAsync(r => r.Ddd == newRegion.Ddd);
+
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+            Assert.Equal(contactDb.Name, newRegion.Name);
+            Assert.Equal(contactDb.Ddd, newRegion.Ddd);
         }
     }
 }
