@@ -166,10 +166,13 @@ namespace TechChallange.Test.IntegrationTests.Setup
         {
             var regionOne = new RegionEntity("SP", "11");
             var regionTow = new RegionEntity("SC", "47");
+
+            
             context.Region.AddRange(regionOne, regionTow);
 
             var contactOne = new ContactEntity("Test", "4141-3338", "test@email.com", regionOne.Id);
-            context.Contact.Add(contactOne);
+            var contactTwo = new ContactEntity("Test", "4747-4747", "test@email.com", regionTow.Id);
+            context.Contact.AddRange(contactOne, contactTwo);
 
             context.SaveChanges();
         }

@@ -1,16 +1,9 @@
-﻿using Azure.Core;
-using Microsoft.EntityFrameworkCore;
-using StackExchange.Redis;
-using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using TechChallange.Api.Controllers.Contact.Dto;
 using TechChallange.Api.Controllers.Region.Dto;
 using TechChallange.Api.Response;
-using TechChallange.Domain.Contact.Entity;
-using TechChallange.Domain.Region.Entity;
-using TechChallange.Domain.Region.Exception;
 using TechChallange.Test.IntegrationTests.Setup;
 
 namespace TechChallange.Test.IntegrationTests.Controllers
@@ -18,7 +11,8 @@ namespace TechChallange.Test.IntegrationTests.Controllers
     public class RegionControllerTests(TechChallangeApplicationFactory techChallangeApplicationFactory) : BaseIntegrationTest(techChallangeApplicationFactory)
     {
 
-        const string defaultMessageException = "Região não encontrada na base dados.";
+        const string exceptionMessageRegionDoesNotExist = "Região não encontrada na base dados.";
+        const string exceptionMessageRegionAlreadyExists = "Região já cadastrada.";
 
         [Fact(DisplayName = "Should Return All Activies Regions Paged")]
         public async Task ShouldReturnAllActiviesRegionsPaged()
@@ -74,7 +68,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.False(result?.Success);
-            Assert.Equal(defaultMessageException, result?.Error);
+            Assert.Equal(exceptionMessageRegionDoesNotExist, result?.Error);
             Assert.Null(result?.Data);
         }
 
@@ -117,7 +111,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.False(regionDb?.IsDeleted);
-            Assert.Equal(defaultMessageException, result?.Error);
+            Assert.Equal(exceptionMessageRegionDoesNotExist, result?.Error);
         }
 
         [Fact(DisplayName = "Should Update Region With Success")]
@@ -184,7 +178,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.False(result?.Success);
-            Assert.Equal(defaultMessageException, result?.Error);
+            Assert.Equal(exceptionMessageRegionDoesNotExist, result?.Error);
         }
 
         [Fact(DisplayName = "Should Return Region By Ddd With Contacts")]
@@ -276,6 +270,33 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
             Assert.Equal(contactDb.Name, newRegion.Name);
             Assert.Equal(contactDb.Ddd, newRegion.Ddd);
+        }
+
+        [Fact(DisplayName = "Should Create Region Return Bad Request When Ddd Already Exist")]
+        public async Task ShouldCreateRegionReturnBadRequestWhenDddAlreadyExist()
+        {
+
+            var client = techChallangeApplicationFactory.CreateClient();
+
+            var newRegion = new RegionCreateDto
+            {
+                Name = "Teste Mock",
+                Ddd = "11"
+            };
+
+            var content = new StringContent(JsonSerializer.Serialize(newRegion), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("region", content);
+
+            var responseParsed = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<BaseResponseDto<IEnumerable<RegionResponseDto>>>(responseParsed,
+                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            var contactDb = await _dbContext.Region.AsNoTracking().FirstOrDefaultAsync(r => r.Ddd == newRegion.Ddd);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.False(result.Success);
+            Assert.Equal(exceptionMessageRegionAlreadyExists, result.Error);
         }
     }
 }
