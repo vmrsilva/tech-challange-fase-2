@@ -1,0 +1,47 @@
+version: "1"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: TechChallange.Api/Dockerfile
+      args:
+       version: 1
+    image: api-contacts
+    ports:
+      - 5193:8080
+    networks:
+      - web-api-contacts
+
+  prometheus:
+    build:
+      context: ./TechChallange.Api/prometheus
+      dockerfile: Dockerfile
+      args:
+        version: 1
+    image: prometheus-local
+    restart: always
+    ports:
+      - 9090:9090
+    networks:
+      - web-api-contacts
+    volumes:
+      - './prometheus/data:/data'
+
+  grafana:
+    build:
+      context: ./TechChallange.Api/grafana
+      dockerfile: Dockerfile
+      args:
+        version: 1
+    depends_on:
+      - prometheus
+    image: grafana-local
+    restart: always
+    ports:
+      - 3000:3000
+
+networks:
+  web-api-contacts:
+    #driver: overlay
+    attachable: true
