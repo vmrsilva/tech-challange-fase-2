@@ -30,11 +30,11 @@ namespace TechChallange.IoC
         {
             services.AddDbContext<TechChallangeContext>(options => options.UseSqlServer(configuration.GetConnectionString("Database")));
 
-            //using (var serviceProvider = services.BuildServiceProvider())
-            //{
-            //    var dbContext = serviceProvider.GetRequiredService<TechChallangeContext>();
-            //    dbContext.Database.Migrate();
-            //}
+            using (var serviceProvider = services.BuildServiceProvider())
+            {
+                var dbContext = serviceProvider.GetRequiredService<TechChallangeContext>();
+                dbContext.Database.Migrate();
+            }
         }
 
         public static void ConfigureBase(IServiceCollection services)
