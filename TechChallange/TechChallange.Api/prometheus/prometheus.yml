@@ -5,4 +5,4 @@ scrape_configs:
   - job_name: 'dotnet_api'
     metrics_path: '/metrics'  # Caminho onde a API .NET expõe as métricas
     static_configs:
-      - targets: ['api:5193']  # Nome do serviço do container da API no Docker Compose
+      - targets: ['api:8080']  # Nome do serviço do container da API no Docker Compose

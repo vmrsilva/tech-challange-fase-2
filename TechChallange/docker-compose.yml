@@ -31,6 +31,8 @@ services:
       dockerfile: Dockerfile
       args:
         version: 1
+    depends_on:
+      - api
     image: prometheus-local
     restart: always
     ports:
@@ -52,11 +54,17 @@ services:
     restart: always
     ports:
       - 3000:3000
+    networks:
+      - web-api-contacts
+    volumes:
+      - grafana_data:/var/lib/grafana
 
 networks:
   web-api-contacts:
     #driver: overlay
-    attachable: true
+    #attachable: true
+    driver: bridge
 
 volumes:
   redis_data:
+  grafana_data:

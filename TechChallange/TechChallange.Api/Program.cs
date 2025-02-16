@@ -1,9 +1,9 @@
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-
 using TechChallange.Api.Mapper;
 using TechChallange.IoC;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +36,7 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI();
 //}
+app.MapMetrics();
 
 app.UseHttpsRedirection();
 
