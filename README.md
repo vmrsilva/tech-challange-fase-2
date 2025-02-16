@@ -18,3 +18,17 @@ Executar o comando:
 Acessar o diretório do projeto TechChallange.Test <br/>
 Executar o comando:
 `dotnet test`
+
+### Executar monitoramento em localhost:<br/>
+
+Posicionar no diretório: ../tech-challange-fase-2/TechChallange <br/>
+e executar o comando para iniciar os containers:
+
+```bash
+docker-compose up --build -d
+````
+
+Comando parar os containers: <br/>
+```bash
+docker-compose down
+```
