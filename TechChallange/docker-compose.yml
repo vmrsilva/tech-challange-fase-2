@@ -1,4 +1,4 @@
-version: "1"
+#version: "1"
 
 services:
 
@@ -40,7 +40,7 @@ services:
     networks:
       - web-api-contacts
     volumes:
-      - './prometheus/data:/data'
+      - prometheus_data:/prometheus/data:/data
 
   grafana:
     build:
@@ -68,3 +68,4 @@ networks:
 volumes:
   redis_data:
   grafana_data:
+  prometheus_data:

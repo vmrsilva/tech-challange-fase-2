@@ -4,6 +4,8 @@ using FluentValidation.AspNetCore;
 using TechChallange.Api.Mapper;
 using TechChallange.IoC;
 using Prometheus;
+using Prometheus.SystemMetrics;
+using Prometheus.DotNetRuntime;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSystemMetrics();
 
 DomainInjection.AddInfraestructure(builder.Services, builder.Configuration);
 
@@ -36,6 +40,12 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI();
 //}
+app.UseRouting();
+app.UseHttpMetrics();
+app.UseMetricServer();
+
+var collector = DotNetRuntimeStatsBuilder.Default().StartCollecting();
+
 app.MapMetrics();
 
 app.UseHttpsRedirection();
