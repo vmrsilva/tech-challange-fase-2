@@ -44,7 +44,7 @@ app.UseRouting();
 app.UseHttpMetrics();
 app.UseMetricServer();
 
-var collector = DotNetRuntimeStatsBuilder.Default().StartCollecting();
+//var collector = DotNetRuntimeStatsBuilder.Default().StartCollecting();
 
 app.MapMetrics();
 
