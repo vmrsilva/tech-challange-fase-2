@@ -10,7 +10,7 @@ using TechChallange.Domain.Region.Exception;
 namespace TechChallange.Api.Controllers.Contact.Http
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ContactController : Controller
     {
         private readonly IContactService _contactService;
@@ -73,7 +73,7 @@ namespace TechChallange.Api.Controllers.Contact.Http
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllPagedAsync([FromQuery] int pageSize, [FromQuery] int page)
+        public async Task<IActionResult> GetAllPagedAsync([FromQuery] int pageSize = 10, [FromQuery] int page = 0)
         {
             var contacts = await _contactService.GetAllPagedAsync(pageSize, page).ConfigureAwait(false);
 

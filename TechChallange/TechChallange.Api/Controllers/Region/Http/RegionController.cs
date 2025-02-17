@@ -10,7 +10,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace TechChallange.Api.Controllers.Region.Http
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class RegionController : Controller
     {
         private readonly IRegionService _regionService;
@@ -118,7 +118,7 @@ namespace TechChallange.Api.Controllers.Region.Http
         }
 
         [HttpGet("get-all")]
-        public async Task<IActionResult> GetAllPagedAsync([FromQuery] int pageSize, [FromQuery] int page)
+        public async Task<IActionResult> GetAllPagedAsync([FromQuery] int pageSize = 10, [FromQuery] int page= 0)
         {
             try
             {

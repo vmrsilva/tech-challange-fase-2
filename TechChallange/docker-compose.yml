@@ -1,12 +1,24 @@
-version: "1"
+#version: "1"
 
 services:
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - web-api-contacts
+    volumes:
+      - redis_data:/data
   api:
     build:
       context: .
       dockerfile: TechChallange.Api/Dockerfile
       args:
        version: 1
+    depends_on:
+      - redis
     image: api-contacts
     ports:
       - 5193:8080
@@ -19,6 +31,8 @@ services:
       dockerfile: Dockerfile
       args:
         version: 1
+    depends_on:
+      - api
     image: prometheus-local
     restart: always
     ports:
@@ -26,7 +40,7 @@ services:
     networks:
       - web-api-contacts
     volumes:
-      - './prometheus/data:/data'
+      - prometheus_data:/prometheus/data:/data
 
   grafana:
     build:
@@ -40,8 +54,18 @@ services:
     restart: always
     ports:
       - 3000:3000
+    networks:
+      - web-api-contacts
+    volumes:
+      - grafana_data:/var/lib/grafana
 
 networks:
   web-api-contacts:
     #driver: overlay
-    attachable: true
+    #attachable: true
+    driver: bridge
+
+volumes:
+  redis_data:
+  grafana_data:
+  prometheus_data:

@@ -13,6 +13,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
     {
         const string defaultMessageExceptionRegion = "Região não encontrada na base dados.";
         const string defaultMessageExceptionContact = "Contato não encontrado na base de dados.";
+        const string routeBase = "api/contact";
 
         [Fact(DisplayName = "Should Create New Contact With Success")]
         public async Task ShouldCreateNewContactWithSuccess()
@@ -30,7 +31,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             };
 
             var content = new StringContent(JsonSerializer.Serialize(contact), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("contact", content);
+            var response = await client.PostAsync($"{routeBase}", content);
 
             var responseParsed = await response.Content.ReadAsStringAsync();
 
@@ -60,7 +61,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             };
 
             var content = new StringContent(JsonSerializer.Serialize(contact), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("contact", content);
+            var response = await client.PostAsync($"{routeBase}", content);
 
             var responseParsed = await response.Content.ReadAsStringAsync();
 
@@ -83,7 +84,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             var client = techChallangeApplicationFactory.CreateClient();
             var regionDb = await _dbContext.Region.AsNoTracking().FirstOrDefaultAsync(r => r.Ddd == ddd);
 
-            var response = await client.GetAsync($"contact/by-ddd/{ddd}");
+            var response = await client.GetAsync($"{routeBase}/by-ddd/{ddd}");
 
             var responseParsed = await response.Content.ReadAsStringAsync();
 
@@ -107,7 +108,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
 
             var contactDb = await _dbContext.Contact.AsNoTracking().FirstOrDefaultAsync(r => r.RegionId == regionDb.Id);
 
-            var response = await client.GetAsync($"contact/by-id/{contactDb.Id}");
+            var response = await client.GetAsync($"{routeBase}/by-id/{contactDb.Id}");
 
             var responseParsed = await response.Content.ReadAsStringAsync();
 
@@ -126,7 +127,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
 
             var client = techChallangeApplicationFactory.CreateClient();
 
-            var response = await client.GetAsync($"contact/by-id/{Guid.NewGuid()}");
+            var response = await client.GetAsync($"{routeBase}/by-id/{Guid.NewGuid()}");
 
             var responseParsed = await response.Content.ReadAsStringAsync();
 

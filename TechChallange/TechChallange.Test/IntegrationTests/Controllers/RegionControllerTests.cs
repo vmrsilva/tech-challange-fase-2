@@ -13,6 +13,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
 
         const string exceptionMessageRegionDoesNotExist = "Região não encontrada na base dados.";
         const string exceptionMessageRegionAlreadyExists = "Região já cadastrada.";
+        const string routeBase = "api/region";
 
         [Fact(DisplayName = "Should Return All Activies Regions Paged")]
         public async Task ShouldReturnAllActiviesRegionsPaged()
@@ -21,7 +22,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
 
             var countInDb = await _dbContext.Region.AsNoTracking().CountAsync(c => c.IsDeleted == false);
 
-            var response = await client.GetAsync("region/get-all?pageSize=10&page=1");
+            var response = await client.GetAsync($"{routeBase}/get-all?pageSize=10&page=1");
 
             var responseParsed = await response.Content.ReadAsStringAsync();
 
@@ -41,7 +42,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
 
             var client = techChallangeApplicationFactory.CreateClient();
 
-            var response = await client.GetAsync($"region/get-by-id/{regionEntity.Id}");
+            var response = await client.GetAsync($"{routeBase}/get-by-id/{regionEntity.Id}");
 
             var responseParsed = await response.Content.ReadAsStringAsync();
 
@@ -59,7 +60,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         {
             var client = techChallangeApplicationFactory.CreateClient();
 
-            var response = await client.GetAsync($"region/get-by-id/{Guid.NewGuid()}");
+            var response = await client.GetAsync($"{routeBase}/get-by-id/{Guid.NewGuid()}");
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -79,7 +80,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
 
             var client = techChallangeApplicationFactory.CreateClient();
 
-            var response = await client.DeleteAsync($"region/{regionEntity.Id}");
+            var response = await client.DeleteAsync($"{routeBase}/{regionEntity.Id}");
 
             var responseParsed = await response.Content.ReadAsStringAsync();
 
@@ -99,7 +100,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
 
             var client = techChallangeApplicationFactory.CreateClient();
 
-            var response = await client.DeleteAsync($"region/{Guid.NewGuid()}");
+            var response = await client.DeleteAsync($"{routeBase}/{Guid.NewGuid()}");
 
             var responseParsed = await response.Content.ReadAsStringAsync();
 
@@ -131,7 +132,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             var json = JsonSerializer.Serialize(regionUpdateDto);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await client.PutAsync("region", data);
+            var response = await client.PutAsync($"{routeBase}", data);
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -166,7 +167,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             var json = JsonSerializer.Serialize(regionUpdateDto);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await client.PutAsync("region", data);
+            var response = await client.PutAsync($"{routeBase}", data);
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -186,7 +187,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         {
             var client = techChallangeApplicationFactory.CreateClient();
 
-            var response = await client.GetAsync($"region/get-ddd-with-contacts/{11}");
+            var response = await client.GetAsync($"{routeBase}/get-ddd-with-contacts/{11}");
             var responseParsed = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<BaseResponseDto<RegionWithContactsResponseDto>>(responseParsed,
                                                                                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -203,7 +204,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         {
             var client = techChallangeApplicationFactory.CreateClient();
 
-            var response = await client.GetAsync($"region/get-ddd-with-contacts/{99}");
+            var response = await client.GetAsync($"{routeBase}/get-ddd-with-contacts/{99}");
             var responseParsed = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<BaseResponseDto<RegionWithContactsResponseDto>>(responseParsed,
                                                                                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -218,7 +219,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         {
             var client = techChallangeApplicationFactory.CreateClient();
 
-            var response = await client.GetAsync($"region/get-by-ddd/{11}");
+            var response = await client.GetAsync($"{routeBase}/get-by-ddd/{11}");
             var responseParsed = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<BaseResponseDto<RegionResponseDto>>(responseParsed,
                                                                                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -235,7 +236,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
 
             var client = techChallangeApplicationFactory.CreateClient();
 
-            var response = await client.GetAsync($"region/get-by-ddd/{99}");
+            var response = await client.GetAsync($"{routeBase}/get-by-ddd/{99}");
             var responseParsed = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<BaseResponseDto<RegionResponseDto>>(responseParsed,
                                                                                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -258,7 +259,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             };
 
             var content = new StringContent(JsonSerializer.Serialize(newRegion), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("region", content);
+            var response = await client.PostAsync($"{routeBase}", content);
 
             var responseParsed = await response.Content.ReadAsStringAsync();
 
@@ -285,7 +286,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             };
 
             var content = new StringContent(JsonSerializer.Serialize(newRegion), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("region", content);
+            var response = await client.PostAsync($"{routeBase}", content);
 
             var responseParsed = await response.Content.ReadAsStringAsync();
 
