@@ -95,57 +95,6 @@ namespace TechChallange.Test.IntegrationTests.Setup
             services.AddScoped<ICacheWrapper, CacheWrapper>();
         }
 
-        //protected override IHost CreateHost(IHostBuilder builder)
-        //{
-        //    builder.ConfigureServices(services =>
-        //    {
-
-        //        var descriptorSqlaa = services.SingleOrDefault(d =>
-        //           d.ServiceType == typeof(TechChallangeContext));
-
-        //        services.Remove(descriptorSqlaa);
-
-
-        //        var descriptorSql = services.SingleOrDefault(d =>
-        //            d.ServiceType == typeof(DbContextOptions<TechChallangeContext>));
-
-        //        if (descriptorSql != null)
-        //        {
-        //            services.Remove(descriptorSql);
-        //        }
-
-        //        services.AddDbContext<TechChallangeContext>(options =>
-        //            options.UseSqlServer(_connectionString!)
-        //        );
-
-
-        //        //var descriptorRedis = services.SingleOrDefault(options =>
-        //        //    options.ServiceType == typeof(IDistributedCache));
-
-        //        //if (descriptorRedis != null)
-        //        //{
-        //        //    services.Remove(descriptorRedis);
-        //        //}
-
-        //        //services.AddStackExchangeRedisCache(options =>
-        //        //{
-        //        //    options.InstanceName = nameof(CacheRepository);
-        //        //    options.Configuration = _connectionStringRedis;
-        //        //});
-
-        //        //services.AddScoped<ICacheRepository, CacheRepository>();
-        //        //services.AddScoped<ICacheWrapper, CacheWrapper>();
-
-        //    });
-
-        //    using var connection = new SqlConnection(_connectionString);
-
-
-        //    var host = base.CreateHost(builder);
-
-        //    return host;
-        //}
-
         public async Task InitializeAsync()
         {
             await _msSqlContainer.StartAsync();
@@ -167,7 +116,7 @@ namespace TechChallange.Test.IntegrationTests.Setup
             var regionOne = new RegionEntity("SP", "11");
             var regionTow = new RegionEntity("SC", "47");
 
-            
+
             context.Region.AddRange(regionOne, regionTow);
 
             var contactOne = new ContactEntity("Test", "4141-3338", "test@email.com", regionOne.Id);
@@ -176,11 +125,5 @@ namespace TechChallange.Test.IntegrationTests.Setup
 
             context.SaveChanges();
         }
-
-
-
     }
-
-
-
 }
