@@ -18,7 +18,6 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         [Fact(DisplayName = "Should Create New Contact With Success")]
         public async Task ShouldCreateNewContactWithSuccess()
         {
-
             var client = techChallangeApplicationFactory.CreateClient();
             var regionEntity = await _dbContext.Region.FirstOrDefaultAsync(r => r.Ddd == "11");
 
@@ -79,8 +78,7 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         [InlineData("11")]
         [InlineData("47")]
         public async Task ShouldReturnContactsByDdd(string ddd)
-        {
-            
+        {            
             var client = techChallangeApplicationFactory.CreateClient();
             var regionDb = await _dbContext.Region.AsNoTracking().FirstOrDefaultAsync(r => r.Ddd == ddd);
 
@@ -94,7 +92,6 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.NotEmpty(result.Data);
             Assert.Equal(regionDb.Id, result.Data.FirstOrDefault().RegionId);
-
         }
 
         [Theory(DisplayName = "Should Return Contact By Id")]
@@ -102,7 +99,6 @@ namespace TechChallange.Test.IntegrationTests.Controllers
         [InlineData("47")]
         public async Task ShouldReturnContactById(string ddd)
         {
-
             var client = techChallangeApplicationFactory.CreateClient();
             var regionDb = await _dbContext.Region.AsNoTracking().FirstOrDefaultAsync(r => r.Ddd == ddd);
 
@@ -118,13 +114,11 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.NotNull(result.Data);
             Assert.Equal(contactDb.Id, result.Data.Id);
-
         }
 
         [Fact(DisplayName = "Should Get By Id Return Bad Request When It Does Not Exist")]
         public async Task ShouldGetByIdReturnBadRequestWhenItDoesNotExist()
         {
-
             var client = techChallangeApplicationFactory.CreateClient();
 
             var response = await client.GetAsync($"{routeBase}/by-id/{Guid.NewGuid()}");
@@ -138,7 +132,6 @@ namespace TechChallange.Test.IntegrationTests.Controllers
             Assert.Null(result.Data);
             Assert.False(result.Success);
             Assert.Equal(defaultMessageExceptionContact, result.Error);
-
         }
     }
 }
