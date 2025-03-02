@@ -97,10 +97,7 @@ namespace TechChallange.Test.IntegrationTests.Setup
 
         public async Task InitializeAsync()
         {
-            await _msSqlContainer.StartAsync();
-            var x = _msSqlContainer.GetConnectionString();
-
-            var aa = x;
+            await _msSqlContainer.StartAsync(); 
 
             await _redisContainer.StartAsync();
         }
@@ -115,7 +112,6 @@ namespace TechChallange.Test.IntegrationTests.Setup
         {
             var regionOne = new RegionEntity("SP", "11");
             var regionTow = new RegionEntity("SC", "47");
-
 
             context.Region.AddRange(regionOne, regionTow);
 
