@@ -23,7 +23,7 @@ namespace TechChallange.Test.IntegrationTests.Setup
             _dbContext = _scope.ServiceProvider.GetRequiredService<TechChallangeContext>();
             _regionService = _scope.ServiceProvider.GetRequiredService<IRegionService>();
         }
-
+        
         public void Dispose()
         {
             _scope?.Dispose();
