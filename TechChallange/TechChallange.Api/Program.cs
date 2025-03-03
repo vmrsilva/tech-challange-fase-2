@@ -55,7 +55,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-err
+
 public partial class Program
 {
 }
