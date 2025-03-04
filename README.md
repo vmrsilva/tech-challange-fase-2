@@ -14,10 +14,14 @@ Acessar o diretório do projeto TechChallange.Api <br/>
 Executar o comando:
 ` dotnet run `
 
+
 ### Executar testes: <br/>
 Acessar o diretório do projeto TechChallange.Test <br/>
 Executar o comando:
 `dotnet test`
+
+---------------------------------
+
 
 ### Executar monitoramento em localhost:<br/>
 
