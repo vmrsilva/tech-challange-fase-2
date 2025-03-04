@@ -66,7 +66,17 @@ namespace TechChallange.Test.IntegrationTests.Setup
             services.AddDbContext<TechChallangeContext>(options =>
             {
                 options.UseSqlServer(_msSqlContainer.GetConnectionString());
+
+                var connectionString = _msSqlContainer.GetConnectionString();
+
+                options.UseSqlServer(connectionString, sqlOptions =>
+                {
+                    sqlOptions.EnableRetryOnFailure(); // Habilita retry automático
+                });
+
             });
+
+
 
             using (var serviceProvider = services.BuildServiceProvider())
             {
