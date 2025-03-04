@@ -21,8 +21,7 @@ Executar o comando:
 
 ### Executar monitoramento em localhost:<br/>
 
-Posicionar no diretório: ../tech-challange-fase-2/TechChallange <br/>
-e executar o comando para iniciar os containers:
+A partir do diretório: ../tech-challange-fase-2/TechChallange executar o comando para iniciar os containers:
 
 ```bash
 docker-compose up --build -d
